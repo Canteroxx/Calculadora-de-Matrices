@@ -1,5 +1,8 @@
-from suma import suma
+from creacion_de_matriz import Creacion_de_matriz
 from creditos import creditos
+from suma import suma
+from resta import resta
+from multiplicacion import multiplicacion
     
 inicio = True
 
@@ -17,22 +20,28 @@ Bienvenido al nuestra calculadora de matrices
     6. Creditos
     7. Salir
           """)
-    alternativa = input("Escoge una opción: ")
-    if alternativa == "1":
-        suma()
-    elif alternativa == "2":
-        pass
-    elif alternativa == "3":
-        pass
-    elif alternativa == "4":
-        pass
-    elif alternativa == "5":
-        pass
-    elif alternativa == "6":
-        creditos()
-    elif alternativa == "7":
-        print("Gracias por usar nuestra calculadora de matrices")
-        inicio = False
-    else:
-        print("Opción no válida, por favor intenta de nuevo.")
-        continue
+    try:
+        alternativa = int(input("Escoge una opción: "))
+        if alternativa == 1:
+            matrizA, matrizB = Creacion_de_matriz(alternativa, "sumar")
+            suma(matrizA,matrizB)
+        elif alternativa == 2:
+            matrizA, matrizB= Creacion_de_matriz(alternativa, "restar")
+            resta(matrizA, matrizB)
+        elif alternativa == 3:
+            matrizA, matrizB= Creacion_de_matriz(alternativa, "multiplicar")
+            multiplicacion(matrizA, matrizB)
+        elif alternativa == 4:
+            pass
+        elif alternativa == 5:
+            pass
+        elif alternativa == 6:
+            creditos()
+        elif alternativa == 7:
+            print("Gracias por usar nuestra calculadora de matrices")
+            inicio = False
+        else:
+            print("Opción no válida, por favor intenta de nuevo.")
+            continue
+    except ValueError:
+        print("Error: Debes ingresar un número entero válido.")

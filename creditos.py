@@ -12,3 +12,4 @@ def creditos():
     for mensaje in mensajes:
         print(mensaje)
         time.sleep(1)
+        

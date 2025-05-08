@@ -1,15 +1,21 @@
-def suma(matrizA, matrizB):
-    print("\nAhora vamos a sumar las matrices")
+def resta(matrizA, matrizB):
+
+    print("\nAhora vamos a restar las matrices")
+
+    #muestra la matriz A
     print("Matriz A:")
     for fila in matrizA:
         print(fila)
+
+    #muestra la matriz B
     print("Matriz B:")
     for fila in matrizB:
         print(fila)
-    print("\nA + B =")
-    # mostrar la operación
+
+    #Muestra la operacion que vamos a realizar 
+    print("\nA - B =")
     for i in range(len(matrizA)):
-        ops = [f"{matrizA[i][j]} + {matrizB[i][j]}" for j in range(len(matrizA[i]))]
+        ops = [f"{matrizA[i][j]} - {matrizB[i][j]}" for j in range(len(matrizA[i]))]
         print(f"[{', '.join(ops)}]")
 
     # calcular la suma numérica
@@ -17,10 +23,10 @@ def suma(matrizA, matrizB):
     for i in range(len(matrizA)):
         fila_res = []
         for j in range(len(matrizA[i])):
-            fila_res.append(matrizA[i][j] + matrizB[i][j])
+            fila_res.append(matrizA[i][j] - matrizB[i][j])
         resultado.append(fila_res)
 
-    print("\nEl resultado de la suma es:")
+    print("\nEl resultado de la resta es:")
     for fila in resultado:
         print(fila)
 
