@@ -3,6 +3,9 @@ from creditos import creditos
 from suma import suma
 from resta import resta
 from multiplicacion import multiplicacion
+from creacion_de_matriz import unica
+from determinante import determinante
+from inversa import inversa
     
 inicio = True
 
@@ -32,9 +35,13 @@ Bienvenido al nuestra calculadora de matrices
             matrizA, matrizB= Creacion_de_matriz(alternativa, "multiplicar")
             multiplicacion(matrizA, matrizB)
         elif alternativa == 4:
-            pass
+            matriz = unica()
+            print("\ncalculo del determinante paso por paso")
+            determinante(matriz)
         elif alternativa == 5:
-            pass
+            matriz = unica()
+            print("\ncalculo de la inversa de la matriz paso por paso")
+            inversa(matriz)
         elif alternativa == 6:
             creditos()
         elif alternativa == 7:

@@ -45,3 +45,23 @@ def Creacion_de_matriz(opcion, operacion):
         print(fila)
 
     return matrizA, matrizB
+
+
+
+def unica():
+    fila = int(input("¿de que tamano es la matriz cuadrada? (max 4): "))
+    while fila > 4 or fila < 1:
+        fila = int(input("debe ser entre 1 y 4, ingrese de nuevo: "))
+
+    matriz = []
+    for i in range(fila):
+        fila_actual = []
+        for j in range(fila):
+            valor = int(input(f"ingrese el elemento [{i}][{j}]: "))
+            fila_actual.append(valor)
+        matriz.append(fila_actual)
+
+    print("la matriz ingresada es: ")
+    for f in matriz:
+        print(f)
+    return matriz
