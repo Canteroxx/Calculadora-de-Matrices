@@ -3,6 +3,7 @@ from tkinter import simpledialog, messagebox, scrolledtext
 import sys
 import io
 
+# Importar operaciones de matrices existentes
 from creacion_de_matriz import Creacion_de_matriz
 from suma import suma
 from resta import resta
@@ -12,138 +13,154 @@ from determinante import determinante
 from inversa import inversa
 from creditos import creditos
 
-class MatrixCalculatorGUI:
+class CalculadoraMatricesGUI:
     def __init__(self, master):
         self.master = master
         master.title("Calculadora de Matrices")
         master.geometry("300x400")
 
+        # Etiqueta de encabezado
         tk.Label(master, text="Calculadora de Matrices", font=("Arial", 16, "bold")).pack(pady=10)
 
-        buttons = [
-            ("Sumar", self.sum_matrices),
-            ("Restar", self.subtract_matrices),
-            ("Multiplicar", self.multiply_matrices),
-            ("Determinante", self.determinant_matrix),
-            ("Inversa", self.inverse_matrix),
-            ("Créditos", self.show_credits),
+        # Definir botones y sus comandos
+        botones = [
+            ("Sumar", self.sumar_matrices),
+            ("Restar", self.restar_matrices),
+            ("Multiplicar", self.multiplicar_matrices),
+            ("Determinante", self.determinante_matriz),
+            ("Inversa", self.inversa_matriz),
+            ("Creditos", self.mostrar_creditos),
             ("Salir", master.quit)
         ]
 
-        for (text, command) in buttons:
-            tk.Button(master, text=text, width=20, command=command).pack(pady=5)
+        # Crear botones en la ventana principal
+        for (texto, comando) in botones:
+            tk.Button(master, text=texto, width=20, command=comando).pack(pady=5)
 
-    def get_size(self, title):
-        rows = simpledialog.askinteger(title, "Número de filas:")
-        cols = simpledialog.askinteger(title, "Número de columnas:")
-        if rows is None or cols is None:
-            raise ValueError("Operación cancelada")
-        return rows, cols
+    def solicitar_tamano(self, titulo):
+        # Pedir numero de filas y columnas
+        filas = simpledialog.askinteger(titulo, "Numero de filas:")
+        columnas = simpledialog.askinteger(titulo, "Numero de columnas:")
+        if filas is None or columnas is None:
+            raise ValueError("Operacion cancelada")
+        return filas, columnas
 
-    def open_matrix_window(self, title, rows, cols, count=1):
-        window = tk.Toplevel(self.master)
-        window.title(f"{title} M{count}")
-        entries = []
-        for i in range(rows):
-            row_entries = []
-            for j in range(cols):
-                e = tk.Entry(window, width=5)
+    def crear_ventana_matriz(self, titulo, filas, columnas, indice=1):
+        # Crear ventana para ingresar elementos de la matriz
+        ventana = tk.Toplevel(self.master)
+        ventana.title(f"{titulo} M{indice}")
+        entradas = []
+        for i in range(filas):
+            fila_entradas = []
+            for j in range(columnas):
+                e = tk.Entry(ventana, width=5)
                 e.grid(row=i, column=j, padx=2, pady=2)
-                row_entries.append(e)
-            entries.append(row_entries)
-        return window, entries
+                fila_entradas.append(e)
+            entradas.append(fila_entradas)
+        return ventana, entradas
 
-    def capture_and_display(self, func, *args):
-        old_stdout = sys.stdout
+    def mostrar_salida(self, funcion, *args):
+        # Redirigir stdout a un buffer
+        salida_antigua = sys.stdout
         buffer = io.StringIO()
         sys.stdout = buffer
         try:
-            func(*args)
+            funcion(*args)
         except Exception as e:
             buffer.write(str(e))
-        sys.stdout = old_stdout
+        # Restaurar stdout
+        sys.stdout = salida_antigua
 
-        out_window = tk.Toplevel(self.master)
-        out_window.title("Resultado")
-        text_area = scrolledtext.ScrolledText(out_window, wrap=tk.WORD, width=60, height=20)
-        text_area.pack(padx=10, pady=10)
-        text_area.insert(tk.END, buffer.getvalue())
-        text_area.configure(state='disabled')
+        # Mostrar resultado en ventana con texto desplazable
+        ventana_out = tk.Toplevel(self.master)
+        ventana_out.title("Resultado")
+        texto = scrolledtext.ScrolledText(ventana_out, wrap=tk.WORD, width=60, height=20)
+        texto.pack(padx=10, pady=10)
+        texto.insert(tk.END, buffer.getvalue())
+        texto.configure(state='disabled')
 
-    def sum_matrices(self):
+    def sumar_matrices(self):
         try:
-            rows, cols = self.get_size("Sumar")
+            filas, columnas = self.solicitar_tamano("Sumar")
         except ValueError:
             return
-        winA, entriesA = self.open_matrix_window("Matriz A", rows, cols, 1)
-        winB, entriesB = self.open_matrix_window("Matriz B", rows, cols, 2)
-        def compute():
-            A = [[float(entriesA[i][j].get()) for j in range(cols)] for i in range(rows)]
-            B = [[float(entriesB[i][j].get()) for j in range(cols)] for i in range(rows)]
-            winA.destroy(); winB.destroy()
-            self.capture_and_display(suma, A, B)
-        tk.Button(winB, text="Calcular", command=compute).grid(row=rows, columnspan=cols, pady=10)
+        ventanaA, entradasA = self.crear_ventana_matriz("Matriz A", filas, columnas, 1)
+        ventanaB, entradasB = self.crear_ventana_matriz("Matriz B", filas, columnas, 2)
+        def calcular():
+            A = [[float(entradasA[i][j].get()) for j in range(columnas)] for i in range(filas)]
+            B = [[float(entradasB[i][j].get()) for j in range(columnas)] for i in range(filas)]
+            ventanaA.destroy()
+            ventanaB.destroy()
+            self.mostrar_salida(suma, A, B)
+        tk.Button(ventanaB, text="Calcular", command=calcular).grid(row=filas, columnspan=columnas, pady=10)
 
-    def subtract_matrices(self):
+    def restar_matrices(self):
         try:
-            rows, cols = self.get_size("Restar")
+            filas, columnas = self.solicitar_tamano("Restar")
         except ValueError:
             return
-        winA, entriesA = self.open_matrix_window("Matriz A", rows, cols, 1)
-        winB, entriesB = self.open_matrix_window("Matriz B", rows, cols, 2)
-        def compute():
-            A = [[float(entriesA[i][j].get()) for j in range(cols)] for i in range(rows)]
-            B = [[float(entriesB[i][j].get()) for j in range(cols)] for i in range(rows)]
-            winA.destroy(); winB.destroy()
-            self.capture_and_display(resta, A, B)
-        tk.Button(winB, text="Calcular", command=compute).grid(row=rows, columnspan=cols, pady=10)
+        ventanaA, entradasA = self.crear_ventana_matriz("Matriz A", filas, columnas, 1)
+        ventanaB, entradasB = self.crear_ventana_matriz("Matriz B", filas, columnas, 2)
+        def calcular():
+            A = [[float(entradasA[i][j].get()) for j in range(columnas)] for i in range(filas)]
+            B = [[float(entradasB[i][j].get()) for j in range(columnas)] for i in range(filas)]
+            ventanaA.destroy()
+            ventanaB.destroy()
+            self.mostrar_salida(resta, A, B)
+        tk.Button(ventanaB, text="Calcular", command=calcular).grid(row=filas, columnspan=columnas, pady=10)
 
-    def multiply_matrices(self):
+    def multiplicar_matrices(self):
         try:
-            r1, c1 = simpledialog.askinteger("Multiplicar", "Filas Matriz A:"), simpledialog.askinteger("Multiplicar", "Columnas Matriz A y Filas Matriz B:")
+            f1 = simpledialog.askinteger("Multiplicar", "Filas Matriz A:")
+            c1 = simpledialog.askinteger("Multiplicar", "Columnas Matriz A y Filas Matriz B:")
             c2 = simpledialog.askinteger("Multiplicar", "Columnas Matriz B:")
-            if None in (r1, c1, c2): raise ValueError
+            if None in (f1, c1, c2):
+                raise ValueError
         except ValueError:
             return
-        winA, entriesA = self.open_matrix_window("Matriz A", r1, c1, 1)
-        winB, entriesB = self.open_matrix_window("Matriz B", c1, c2, 2)
-        def compute():
-            A = [[float(entriesA[i][j].get()) for j in range(c1)] for i in range(r1)]
-            B = [[float(entriesB[i][j].get()) for j in range(c2)] for i in range(c1)]
-            winA.destroy(); winB.destroy()
-            self.capture_and_display(multiplicacion, A, B)
-        tk.Button(winB, text="Calcular", command=compute).grid(row=c1, columnspan=c2, pady=10)
+        ventanaA, entradasA = self.crear_ventana_matriz("Matriz A", f1, c1, 1)
+        ventanaB, entradasB = self.crear_ventana_matriz("Matriz B", c1, c2, 2)
+        def calcular():
+            A = [[float(entradasA[i][j].get()) for j in range(c1)] for i in range(f1)]
+            B = [[float(entradasB[i][j].get()) for j in range(c2)] for i in range(c1)]
+            ventanaA.destroy()
+            ventanaB.destroy()
+            self.mostrar_salida(multiplicacion, A, B)
+        tk.Button(ventanaB, text="Calcular", command=calcular).grid(row=c1, columnspan=c2, pady=10)
 
-    def determinant_matrix(self):
+    def determinante_matriz(self):
         try:
-            n = simpledialog.askinteger("Determinante", "Tamaño de la matriz (n x n):")
-            if n is None: raise ValueError
+            n = simpledialog.askinteger("Determinante", "Tamano de la matriz (n x n):")
+            if n is None:
+                raise ValueError
         except ValueError:
             return
-        win, entries = self.open_matrix_window("Matriz", n, n)
-        def compute():
-            M = [[float(entries[i][j].get()) for j in range(n)] for i in range(n)]
-            win.destroy()
-            self.capture_and_display(determinante, M)
-        tk.Button(win, text="Calcular", command=compute).grid(row=n, columnspan=n, pady=10)
+        ventana, entradas = self.crear_ventana_matriz("Matriz", n, n)
+        def calcular():
+            M = [[float(entradas[i][j].get()) for j in range(n)] for i in range(n)]
+            ventana.destroy()
+            self.mostrar_salida(determinante, M)
+        tk.Button(ventana, text="Calcular", command=calcular).grid(row=n, columnspan=n, pady=10)
 
-    def inverse_matrix(self):
+    def inversa_matriz(self):
         try:
-            n = simpledialog.askinteger("Inversa", "Tamaño de la matriz (n x n):")
-            if n is None: raise ValueError
+            n = simpledialog.askinteger("Inversa", "Tamano de la matriz (n x n):")
+            if n is None:
+                raise ValueError
         except ValueError:
             return
-        win, entries = self.open_matrix_window("Matriz", n, n)
-        def compute():
-            M = [[float(entries[i][j].get()) for j in range(n)] for i in range(n)]
-            win.destroy()
-            self.capture_and_display(inversa, M)
-        tk.Button(win, text="Calcular", command=compute).grid(row=n, columnspan=n, pady=10)
+        ventana, entradas = self.crear_ventana_matriz("Matriz", n, n)
+        def calcular():
+            M = [[float(entradas[i][j].get()) for j in range(n)] for i in range(n)]
+            ventana.destroy()
+            self.mostrar_salida(inversa, M)
+        tk.Button(ventana, text="Calcular", command=calcular).grid(row=n, columnspan=n, pady=10)
 
-    def show_credits(self):
-        self.capture_and_display(creditos)
+    def mostrar_creditos(self):
+        # Mostrar creditos del programa
+        self.mostrar_salida(creditos)
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = MatrixCalculatorGUI(root)
+    app = CalculadoraMatricesGUI(root)
     root.mainloop()
