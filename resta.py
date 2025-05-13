@@ -1,6 +1,6 @@
-import time
-def suma(matrizA, matrizB):
-    print("\nAhora vamos a sumar las matrices")
+import time 
+def resta(matrizA, matrizB):
+    print("\nAhora vamos a restar las matrices")
 
     # muestra la matriz A
     print("Matriz A:")
@@ -14,23 +14,23 @@ def suma(matrizA, matrizB):
         print(fila)
         time.sleep(1)
 
-    # mostrar la operación
-    print("\nA + B =")
+    # muestra la operación
+    print("\nA - B =")
     for i in range(len(matrizA)):
-        ops = [f"{matrizA[i][j]} + {matrizB[i][j]}" for j in range(len(matrizA[i]))]
+        ops = [f"{matrizA[i][j]} - {matrizB[i][j]}" for j in range(len(matrizA[i]))]
         print(f"[{', '.join(ops)}]")
         time.sleep(1)
 
-    # calcular la suma numérica
+    # calcular la resta numérica
     resultado = []
     for i in range(len(matrizA)):
         fila_res = []
         for j in range(len(matrizA[i])):
-            valor = round(matrizA[i][j] + matrizB[i][j], 2)
+            valor = round(matrizA[i][j] - matrizB[i][j], 2)
             fila_res.append(valor)
         resultado.append(fila_res)
 
-    print("\nEl resultado de la suma es:")
+    print("\nEl resultado de la resta es:")
     for fila in resultado:
         print(fila)
         time.sleep(1)
